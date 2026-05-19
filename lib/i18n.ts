@@ -93,7 +93,7 @@ export const dict: Record<Locale, Dict> = {
         },
         {
           title: "Cierra y a pagar",
-          desc: "Al final de la noche, Roomy calcula qué debe pagar cada uno. Sin sumas mentales, sin liarla.",
+          desc: "Al cerrar la sala, Roomy calcula qué debe pagar cada uno. Sin sumas mentales, sin liarla.",
         },
       ],
     },
@@ -211,7 +211,7 @@ export const dict: Record<Locale, Dict> = {
         },
         {
           title: "Close it and pay",
-          desc: "At the end of the night, Roomy calculates what each person owes. No mental math, no awkward moments.",
+          desc: "When the room is closed, Roomy calculates what each person owes. No mental math, no awkward moments.",
         },
       ],
     },
