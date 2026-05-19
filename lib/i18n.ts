@@ -3,7 +3,63 @@ export type Locale = "es" | "en";
 export const defaultLocale: Locale = "es";
 export const locales: Locale[] = ["es", "en"];
 
-export const dict = {
+export type Dict = {
+  nav: {
+    howItWorks: string;
+    features: string;
+    faq: string;
+    download: string;
+  };
+  hero: {
+    badge: string;
+    title1: string;
+    title2: string;
+    subtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    proofPoints: string[];
+  };
+  how: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    steps: { title: string; desc: string }[];
+  };
+  features: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    items: { title: string; desc: string }[];
+  };
+  showcase: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+  };
+  faq: {
+    eyebrow: string;
+    title: string;
+    items: { q: string; a: string }[];
+  };
+  cta: {
+    title: string;
+    subtitle: string;
+    appStore: string;
+    playStore: string;
+    comingSoon: string;
+  };
+  footer: {
+    tagline: string;
+    product: string;
+    legal: string;
+    privacy: string;
+    terms: string;
+    contact: string;
+    rights: string;
+  };
+};
+
+export const dict: Record<Locale, Dict> = {
   es: {
     nav: {
       howItWorks: "Cómo funciona",
@@ -240,6 +296,4 @@ export const dict = {
       rights: "All rights reserved.",
     },
   },
-} as const;
-
-export type Dict = typeof dict.es;
+};
