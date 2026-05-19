@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import { useLocale } from "@/lib/locale-context";
-import { PhoneMockup } from "./phone-mockup";
-import { StoreBadges } from "./store-badges";
+import { PhoneMockup } from "@/components/phone-mockup";
+import { StoreBadges } from "@/components/store-badges";
 import { Check } from "lucide-react";
 
 export function Hero() {
