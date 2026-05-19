@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --roomy-bg: #f8f9fa;
+}
+
+html,
+body {
+  background-color: var(--roomy-bg);
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: #ff6b35;
+  color: white;
+}
+
+/* Grain texture overlay for hero — sutil */
+.bg-grain {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(15, 23, 42, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Smooth scroll cuando se navega por anchors */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Gradient blob común */
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.55;
+  pointer-events: none;
+}
