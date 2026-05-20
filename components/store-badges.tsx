@@ -5,14 +5,14 @@ import { useLocale } from "@/lib/locale-context";
 export function StoreBadges({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const { t } = useLocale();
 
-  // Altura y padding generosos para que las dos líneas internas (sub + label)
-  // respiren. El texto interno mantiene un tamaño consistente — el "size" solo
-  // afecta el contenedor, no la tipografía de las líneas (evita el efecto
-  // achatado cuando "text-lg" choca con "text-[10px]").
+  // Altura mínima (no fija) y padding consistente: si por alguna razón el
+  // label tiene que romper línea, el botón crece en vez de aplastarse. El
+  // tamaño solo afecta al contenedor; las dos líneas internas (sub + label)
+  // mantienen su tipografía para que no choquen.
   const sizes = {
-    sm: "h-14 px-4 gap-2.5",
-    md: "h-[60px] px-5 gap-3",
-    lg: "h-[68px] px-6 gap-3.5",
+    sm: "min-h-[56px] px-4 gap-2.5",
+    md: "min-h-[60px] px-5 gap-3",
+    lg: "min-h-[68px] px-6 gap-3.5",
   };
 
   return (
@@ -49,12 +49,14 @@ function StoreButton({
       type="button"
       disabled
       aria-disabled
-      className={`group inline-flex items-center justify-start rounded-2xl bg-roomy-ink text-white shadow-soft hover:bg-black transition disabled:cursor-not-allowed disabled:opacity-95 ${sizeClass}`}
+      className={`group inline-flex items-center justify-start rounded-2xl bg-roomy-ink py-2.5 text-white shadow-soft hover:bg-black transition disabled:cursor-not-allowed disabled:opacity-95 ${sizeClass}`}
     >
       {store === "apple" ? <AppleIcon /> : <GoogleIcon />}
       <span className="flex flex-col items-start text-left leading-none">
-        <span className="text-[11px] font-medium opacity-70 mb-1">{sub}</span>
-        <span className="text-[15px] font-semibold leading-tight whitespace-nowrap">
+        <span className="text-[10px] font-medium opacity-70 mb-1 whitespace-nowrap">
+          {sub}
+        </span>
+        <span className="text-[14px] font-semibold leading-tight whitespace-nowrap">
           {label}
         </span>
       </span>
@@ -74,24 +76,33 @@ function AppleIcon() {
   );
 }
 
+/**
+ * Icono oficial de Google Play: cuatro triángulos que forman un play. El
+ * vértice izquierdo pivota en (3, 20.5) y los cuatro paths comparten el
+ * punto central (12.95, 12) para que las aristas casen perfectamente.
+ */
 function GoogleIcon() {
   return (
     <svg viewBox="0 0 24 24" className="h-7 w-7 shrink-0" aria-hidden>
+      {/* Triángulo izquierdo superior (verde) */}
       <path
-        d="M3.6 2.7l9.8 9.3-9.8 9.3c-.4-.3-.6-.8-.6-1.4V4.1c0-.6.2-1.1.6-1.4z"
-        fill="#FF6B35"
+        d="M3.609 1.814 13.792 12 3.61 22.186a1.49 1.49 0 0 1-.61-1.205V3.018c0-.484.222-.916.61-1.204z"
+        fill="#00D1B2"
       />
+      {/* Triángulo derecho superior (amarillo) */}
       <path
-        d="M16.9 8.6l-3.5 3.4 3.5 3.4 4.1-2.3c.6-.4 1-1 1-1.7s-.4-1.3-1-1.7l-4.1-3.1z"
-        fill="#FFB627"
+        d="M16.793 9 6.05 2.852 14.54 11.343 16.793 9z"
+        fill="#FFC107"
       />
+      {/* Triángulo izquierdo inferior (rojo) */}
       <path
-        d="M13.4 12L3.6 2.7c.2-.2.5-.2.8-.2.3 0 .6.1.9.3l8.1 9.2z"
-        fill="#fff"
+        d="M6.05 21.15 16.793 15l-2.253-2.343L6.05 21.15z"
+        fill="#EF4444"
       />
+      {/* Triángulo derecho (azul) */}
       <path
-        d="M13.4 12l-8.1 9.2c-.3.2-.6.3-.9.3-.3 0-.6 0-.8-.2L13.4 12z"
-        fill="#E5552A"
+        d="m20.16 10.81-3.018-1.74-2.604 2.93 2.604 2.93 3.07-1.77a1.4 1.4 0 0 0 .708-1.16 1.4 1.4 0 0 0-.76-1.19z"
+        fill="#3B82F6"
       />
     </svg>
   );
