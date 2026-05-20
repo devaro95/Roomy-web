@@ -8,8 +8,8 @@ export type JoinDoc = {
   badge: string;
   title: string;
   subtitle: string;
-  opening: string;
-  retry: string;
+  openApp: string;
+  openAppHint: string;
   installCta: string;
   appStore: string;
   playStore: string;
@@ -25,9 +25,9 @@ export const joinContent: Record<Locale, JoinDoc> = {
     badge: "Invitación a una Room",
     title: "Únete a la sala",
     subtitle:
-      "Te han invitado a dividir la cuenta con Roomy. Si tienes la app instalada, te abriremos directamente. Si no, descárgala y entra con el código.",
-    opening: "Abriendo la app…",
-    retry: "Volver a intentar",
+      "Te han invitado a dividir la cuenta con Roomy. Pulsa el botón para abrir la app y entrar a la sala con este código.",
+    openApp: "Abrir en la app",
+    openAppHint: "Si tienes Roomy instalada, se abrirá automáticamente.",
     installCta: "¿Aún no tienes Roomy?",
     appStore: "App Store",
     playStore: "Google Play",
@@ -43,9 +43,9 @@ export const joinContent: Record<Locale, JoinDoc> = {
     badge: "Room invitation",
     title: "Join the room",
     subtitle:
-      "You've been invited to split the bill with Roomy. If you have the app installed, we'll open it for you. Otherwise, download it and join with the code.",
-    opening: "Opening the app…",
-    retry: "Try again",
+      "You've been invited to split the bill with Roomy. Tap the button to open the app and join the room with this code.",
+    openApp: "Open in the app",
+    openAppHint: "If you have Roomy installed, it'll open automatically.",
     installCta: "Don't have Roomy yet?",
     appStore: "App Store",
     playStore: "Google Play",

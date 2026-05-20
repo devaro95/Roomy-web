@@ -7,8 +7,18 @@ import { deepLinkFor, joinContent } from "@/lib/join-content";
 import { RoomyMark } from "@/components/roomy-logo";
 
 /**
- * Componente cliente de la página de invitación. Aquí está toda la lógica
- * de intentar el deeplink y, si no funciona, mostrar fallback con las stores.
+ * Página de invitación: muestra el código de la sala y un botón para abrir
+ * la app nativa vía custom scheme `com.accountshare://join/CODE`.
+ *
+ * Decisión clave: el deeplink SOLO se dispara cuando el usuario pulsa el
+ * botón, no automáticamente al cargar. Esto es porque Safari (y Chrome iOS)
+ * tratan `window.location = "esquema-no-http"` como una descarga sospechosa
+ * si no viene de una interacción directa del usuario — antes el usuario
+ * veía "¿Descargar archivo .app?" en vez de abrir Roomy.
+ *
+ * Renderizando el deeplink como `<a href>` y dejando que el usuario lo pulse,
+ * iOS lo acepta y abre la app si está instalada. Si no, no pasa nada y los
+ * CTAs de las stores siguen ahí para descargarla.
  */
 export function JoinClient({
   code,
@@ -19,57 +29,24 @@ export function JoinClient({
 }) {
   const { locale } = useLocale();
   const t = joinContent[locale];
-  const [opening, setOpening] = useState(true);
 
-  // Intento automático de abrir la app. Si la página sigue visible después
-  // de un par de segundos, asumimos que la app no está instalada y mostramos
-  // los CTAs de descarga.
+  // Detectamos plataforma para destacar la store relevante (solo es info
+  // visual: ambos botones siguen visibles).
+  const [platform, setPlatform] = useState<"ios" | "android" | "other">(
+    "other",
+  );
   useEffect(() => {
-    if (!code) {
-      setOpening(false);
-      return;
-    }
-    // Disparamos la apertura del deeplink al cargar. iOS y Android lo
-    // capturan si la app está instalada; si no, no pasa nada y se mantiene
-    // esta página.
-    const start = Date.now();
-    const url = deepLinkFor(code);
-
-    // Usamos location.replace para evitar dejar una entrada en el history
-    // que rompa el botón "atrás" del navegador.
-    try {
-      window.location.replace(url);
-    } catch {
-      /* algunos browsers tiran si no hay handler; ignoramos */
-    }
-
-    // Si tras 2.5s seguimos aquí (la app no ha capturado el deeplink),
-    // dejamos de mostrar el spinner y revelamos los CTAs.
-    const timeout = window.setTimeout(() => {
-      // Si el documento sigue visible (no nos hemos ido a la app), mostramos
-      // el fallback. Si nos hemos ido, el setTimeout no llegará a ejecutarse
-      // o el estado no se actualizará (la página ya no es visible).
-      if (Date.now() - start >= 2000 && document.visibilityState === "visible") {
-        setOpening(false);
-      }
-    }, 2500);
-
-    return () => window.clearTimeout(timeout);
-  }, [code]);
-
-  const retry = () => {
-    if (!code) return;
-    setOpening(true);
-    window.location.assign(deepLinkFor(code));
-    window.setTimeout(() => setOpening(false), 2500);
-  };
+    const ua = navigator.userAgent || "";
+    if (/iPhone|iPad|iPod/i.test(ua)) setPlatform("ios");
+    else if (/Android/i.test(ua)) setPlatform("android");
+  }, []);
 
   // Código no válido: enlace mal formado o roto.
   if (!code) {
     return (
       <main className="min-h-screen flex items-center justify-center px-6 bg-roomy-bg">
         <div className="max-w-md text-center">
-          <div className="mx-auto mb-6">
+          <div className="mx-auto mb-6 flex justify-center">
             <RoomyMark size={64} />
           </div>
           <h1 className="font-display text-3xl font-bold text-roomy-ink tracking-tight">
@@ -94,14 +71,16 @@ export function JoinClient({
     );
   }
 
+  const deepLink = deepLinkFor(code);
+
   return (
     <main className="min-h-screen flex items-center justify-center px-6 py-12 bg-roomy-bg">
-      <div className="max-w-md w-full text-center">
+      <div className="relative max-w-md w-full text-center">
         {/* Decoración suave de fondo */}
         <div className="blob bg-roomy-primary/30 -z-10 top-10 -left-20 h-72 w-72" />
         <div className="blob bg-roomy-accent/30 -z-10 top-40 -right-20 h-60 w-60" />
 
-        <div className="mx-auto mb-6">
+        <div className="mx-auto mb-6 flex justify-center">
           <RoomyMark size={72} />
         </div>
 
@@ -123,34 +102,45 @@ export function JoinClient({
 
         <p className="mt-5 text-roomy-muted leading-relaxed">{t.subtitle}</p>
 
-        {opening ? (
-          <div className="mt-8 flex items-center justify-center gap-3 text-roomy-ink/80">
-            <Spinner />
-            <span className="text-sm font-medium">{t.opening}</span>
-          </div>
-        ) : (
-          <div className="mt-8 space-y-4">
-            <button
-              type="button"
-              onClick={retry}
-              className="inline-flex items-center justify-center rounded-2xl bg-roomy-ink px-5 py-3 text-sm font-semibold text-white hover:bg-black transition"
-            >
-              {t.retry}
-            </button>
+        {/*
+          Botón principal: dispara el deeplink únicamente al hacer click.
+          Es un <a> con href custom scheme (no usamos onClick + JS) porque es
+          el patrón que mejor toleran Safari, Chrome iOS y Firefox móvil para
+          esquemas no-http: la navegación viene de una interacción del
+          usuario y no se interpreta como descarga.
+        */}
+        <div className="mt-8">
+          <a
+            href={deepLink}
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-roomy-primary hover:bg-roomy-primaryDark active:scale-[0.98] transition px-7 py-4 text-base font-semibold text-white shadow-card"
+          >
+            <OpenIcon />
+            {t.openApp}
+          </a>
+          <p className="mt-3 text-xs text-roomy-muted">{t.openAppHint}</p>
+        </div>
 
-            <div>
-              <p className="text-sm text-roomy-muted mb-3">{t.installCta}</p>
-              <div className="flex flex-col sm:flex-row justify-center gap-3">
-                <StoreButton store="apple" label={t.appStore} sub={t.comingSoon} />
-                <StoreButton store="google" label={t.playStore} sub={t.comingSoon} />
-              </div>
-            </div>
-
-            <p className="text-xs text-roomy-muted/80 leading-relaxed pt-4 max-w-sm mx-auto">
-              {t.manualHelp}
-            </p>
+        <div className="mt-10 pt-8 border-t border-roomy-line">
+          <p className="text-sm text-roomy-muted mb-4">{t.installCta}</p>
+          <div className="flex flex-col sm:flex-row justify-center gap-3">
+            <StoreButton
+              store="apple"
+              label={t.appStore}
+              sub={t.comingSoon}
+              highlighted={platform === "ios"}
+            />
+            <StoreButton
+              store="google"
+              label={t.playStore}
+              sub={t.comingSoon}
+              highlighted={platform === "android"}
+            />
           </div>
-        )}
+
+          <p className="text-xs text-roomy-muted/80 leading-relaxed pt-6 max-w-sm mx-auto">
+            {t.manualHelp}
+          </p>
+        </div>
 
         <Link
           href="/"
@@ -163,28 +153,20 @@ export function JoinClient({
   );
 }
 
-function Spinner() {
+function OpenIcon() {
   return (
     <svg
-      className="animate-spin h-5 w-5 text-roomy-primary"
       viewBox="0 0 24 24"
+      className="h-5 w-5 shrink-0"
       fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       aria-hidden
     >
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="3"
-        className="opacity-25"
-      />
-      <path
-        d="M4 12a8 8 0 0 1 8-8"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
+      <path d="M5 12h14" />
+      <path d="m13 6 6 6-6 6" />
     </svg>
   );
 }
@@ -193,17 +175,23 @@ function StoreButton({
   store,
   label,
   sub,
+  highlighted,
 }: {
   store: "apple" | "google";
   label: string;
   sub: string;
+  highlighted?: boolean;
 }) {
   return (
     <button
       type="button"
       disabled
       aria-disabled
-      className="inline-flex items-center justify-center gap-2 rounded-2xl bg-roomy-ink py-2.5 px-4 text-white shadow-soft transition disabled:cursor-not-allowed disabled:opacity-95 min-h-[56px]"
+      className={`inline-flex items-center justify-center gap-2 rounded-2xl py-2.5 px-4 text-white shadow-soft transition disabled:cursor-not-allowed disabled:opacity-95 min-h-[56px] ${
+        highlighted
+          ? "bg-roomy-ink ring-2 ring-roomy-primary"
+          : "bg-roomy-ink"
+      }`}
     >
       {store === "apple" ? <AppleIcon /> : <GoogleIcon />}
       <span className="flex flex-col items-start text-left leading-none">
