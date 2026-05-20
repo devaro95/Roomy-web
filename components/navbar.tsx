@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useLocale } from "@/lib/locale-context";
 import { RoomyLogo } from "./roomy-logo";
 import { Menu, X } from "lucide-react";
@@ -9,6 +11,8 @@ export function Navbar() {
   const { t, locale, setLocale } = useLocale();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -17,10 +21,16 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Si estamos en el home, los links son anchors puros (#how). Si no
+  // (privacy/terms), apuntan al home con el anchor (/#how) para que el
+  // usuario aterrice en la sección correcta.
+  const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
+  const downloadHref = anchor("download");
+
   const links = [
-    { href: "#how", label: t.nav.howItWorks },
-    { href: "#features", label: t.nav.features },
-    { href: "#faq", label: t.nav.faq },
+    { href: anchor("how"), label: t.nav.howItWorks },
+    { href: anchor("features"), label: t.nav.features },
+    { href: anchor("faq"), label: t.nav.faq },
   ];
 
   return (
@@ -32,9 +42,10 @@ export function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 py-4">
-        <a href="#top" aria-label="Roomy" className="shrink-0">
+        {/* Logo siempre lleva al home — funciona desde cualquier página */}
+        <Link href="/" aria-label="Roomy" className="shrink-0">
           <RoomyLogo />
-        </a>
+        </Link>
 
         <ul className="hidden md:flex items-center gap-7">
           {links.map((l) => (
@@ -52,7 +63,7 @@ export function Navbar() {
         <div className="flex items-center gap-2">
           <LangSwitch locale={locale} setLocale={setLocale} />
           <a
-            href="#download"
+            href={downloadHref}
             className="hidden sm:inline-flex items-center rounded-full bg-roomy-ink px-4 py-2 text-sm font-semibold text-white hover:bg-black transition"
           >
             {t.nav.download}
@@ -85,7 +96,7 @@ export function Navbar() {
             ))}
             <li>
               <a
-                href="#download"
+                href={downloadHref}
                 onClick={() => setOpen(false)}
                 className="inline-flex items-center rounded-full bg-roomy-ink px-4 py-2 text-sm font-semibold text-white"
               >
