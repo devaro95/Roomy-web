@@ -47,7 +47,7 @@ export function JoinClient({
       <main className="min-h-screen flex items-center justify-center px-6 bg-roomy-bg">
         <div className="max-w-md text-center">
           <div className="mx-auto mb-6 flex justify-center">
-            <RoomyMark size={64} />
+            <RoomyMark className="h-16 w-16" />
           </div>
           <h1 className="font-display text-3xl font-bold text-roomy-ink tracking-tight">
             {t.invalidTitle}
@@ -81,7 +81,7 @@ export function JoinClient({
         <div className="blob bg-roomy-accent/30 -z-10 top-40 -right-20 h-60 w-60" />
 
         <div className="mx-auto mb-6 flex justify-center">
-          <RoomyMark size={72} />
+          <RoomyMark className="h-[72px] w-[72px]" />
         </div>
 
         <div className="inline-flex items-center gap-2 rounded-full bg-white/70 backdrop-blur px-3 py-1.5 text-xs font-semibold text-roomy-ink ring-1 ring-roomy-line shadow-soft">
