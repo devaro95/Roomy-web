@@ -8,7 +8,7 @@ import { RoomyMark } from "@/components/roomy-logo";
 
 /**
  * Página de invitación: muestra el código de la sala y un botón para abrir
- * la app nativa vía custom scheme `com.accountshare://join/CODE`.
+ * la app nativa vía custom scheme `roomy://join/CODE`.
  *
  * Decisión clave: el deeplink SOLO se dispara cuando el usuario pulsa el
  * botón, no automáticamente al cargar. Esto es porque Safari (y Chrome iOS)
