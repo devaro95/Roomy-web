@@ -7,7 +7,7 @@ import { normalizeRoomCode } from "@/lib/join-content";
  *
  * La URL está hardcodeada en la app móvil (JoinLink.BASE_URL + /join/CODE).
  * Cuando alguien la abre desde el QR:
- *  1. Intentamos abrir el deeplink `com.accountshare://join/CODE` desde
+ *  1. Intentamos abrir el deeplink `roomy://join/CODE` desde
  *     el cliente. Si la app está instalada, iOS/Android lo capturan y
  *     abren la pantalla de unirse.
  *  2. Si no se instala / no se abre, tras un timeout corto el usuario
