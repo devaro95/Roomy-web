@@ -74,8 +74,8 @@ export function normalizeRoomCode(raw: string | undefined): string | null {
 /**
  * Construye el deeplink nativo de la app. Tiene que coincidir EXACTAMENTE
  * con el intent-filter del AndroidManifest y el CFBundleURLSchemes del
- * Info.plist (com.accountshare).
+ * Info.plist (roomy).
  */
 export function deepLinkFor(code: string): string {
-  return `com.accountshare://join/${code}`;
+  return `roomy://join/${code}`;
 }
