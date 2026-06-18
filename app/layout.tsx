@@ -40,6 +40,29 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const schemaMarkup = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Roomy",
+  operatingSystem: "Android",
+  applicationCategory: "UtilitiesApplication",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "EUR",
+  },
+  description:
+    "Divide la cuenta del bar o restaurante entre amigos en segundos. Cada uno añade lo que pide y Roomy calcula automáticamente cuánto debe pagar cada persona.",
+  url: "https://roomy.app",
+  downloadUrl:
+    "https://play.google.com/store/apps/details?id=com.devaro.roomy",
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "5",
+    ratingCount: "1",
+  },
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -47,6 +70,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${inter.variable} ${display.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
+        />
+      </head>
       <body>
         <LocaleProvider>{children}</LocaleProvider>
       </body>
