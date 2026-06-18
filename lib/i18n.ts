@@ -124,8 +124,8 @@ export const dict: Record<Locale, Dict> = {
           desc: "Entra con Google o crea una cuenta con email. Tu historial te sigue.",
         },
         {
-          title: "Sin pelearte con la propina",
-          desc: "Aplica propina o redondeo a la cuenta total con un toque.",
+          title: "Resumen al cerrar",
+          desc: "Al cerrar la Room, cada persona recibe un desglose claro de lo que ha consumido y lo que debe pagar.",
         },
       ],
     },
@@ -242,8 +242,8 @@ export const dict: Record<Locale, Dict> = {
           desc: "Sign in with Google or email. Your history travels with you.",
         },
         {
-          title: "Tips, sorted",
-          desc: "Add a tip or round up the total with one tap.",
+          title: "Summary on close",
+          desc: "When the Room is closed, each person gets a clear breakdown of what they consumed and what they owe.",
         },
       ],
     },
