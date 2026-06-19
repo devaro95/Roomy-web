@@ -2,13 +2,12 @@
 
 import { useLocale } from "@/lib/locale-context";
 
+const PLAY_STORE_URL =
+  "https://play.google.com/store/apps/details?id=com.devaro.roomy";
+
 export function StoreBadges({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const { t } = useLocale();
 
-  // Altura mínima (no fija) y padding consistente: si por alguna razón el
-  // label tiene que romper línea, el botón crece en vez de aplastarse. El
-  // tamaño solo afecta al contenedor; las dos líneas internas (sub + label)
-  // mantienen su tipografía para que no choquen.
   const sizes = {
     sm: "min-h-[56px] px-4 gap-2.5",
     md: "min-h-[60px] px-5 gap-3",
@@ -22,12 +21,15 @@ export function StoreBadges({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
         label={t.cta.appStore}
         sub={t.cta.comingSoon}
         sizeClass={sizes[size]}
+        disabled
       />
       <StoreButton
         store="google"
-        label={t.cta.playStore}
-        sub={t.cta.comingSoon}
+        label="Disponible en Android"
+        sub="Descargar en"
         sizeClass={sizes[size]}
+        href={PLAY_STORE_URL}
+        disabled={false}
       />
     </div>
   );
@@ -38,19 +40,18 @@ function StoreButton({
   label,
   sub,
   sizeClass,
+  href,
+  disabled = true,
 }: {
   store: "apple" | "google";
   label: string;
   sub: string;
   sizeClass: string;
+  href?: string;
+  disabled?: boolean;
 }) {
-  return (
-    <button
-      type="button"
-      disabled
-      aria-disabled
-      className={`group inline-flex items-center justify-start rounded-2xl bg-roomy-ink py-2.5 text-white shadow-soft hover:bg-black transition disabled:cursor-not-allowed disabled:opacity-95 ${sizeClass}`}
-    >
+  const inner = (
+    <>
       {store === "apple" ? <AppleIcon /> : <GoogleIcon />}
       <span className="flex flex-col items-start text-left leading-none">
         <span className="text-[10px] font-medium opacity-70 mb-1 whitespace-nowrap">
@@ -60,6 +61,32 @@ function StoreButton({
           {label}
         </span>
       </span>
+    </>
+  );
+
+  const baseClass = `group inline-flex items-center justify-start rounded-2xl bg-roomy-ink py-2.5 text-white shadow-soft transition ${sizeClass}`;
+
+  if (href && !disabled) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${baseClass} hover:bg-black`}
+      >
+        {inner}
+      </a>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      disabled
+      aria-disabled
+      className={`${baseClass} disabled:cursor-not-allowed disabled:opacity-60`}
+    >
+      {inner}
     </button>
   );
 }
@@ -76,30 +103,21 @@ function AppleIcon() {
   );
 }
 
-/**
- * Icono oficial de Google Play: cuatro triángulos que forman un play. El
- * vértice izquierdo pivota en (3, 20.5) y los cuatro paths comparten el
- * punto central (12.95, 12) para que las aristas casen perfectamente.
- */
 function GoogleIcon() {
   return (
     <svg viewBox="0 0 24 24" className="h-7 w-7 shrink-0" aria-hidden>
-      {/* Triángulo izquierdo superior (verde) */}
       <path
         d="M3.609 1.814 13.792 12 3.61 22.186a1.49 1.49 0 0 1-.61-1.205V3.018c0-.484.222-.916.61-1.204z"
         fill="#00D1B2"
       />
-      {/* Triángulo derecho superior (amarillo) */}
       <path
         d="M16.793 9 6.05 2.852 14.54 11.343 16.793 9z"
         fill="#FFC107"
       />
-      {/* Triángulo izquierdo inferior (rojo) */}
       <path
         d="M6.05 21.15 16.793 15l-2.253-2.343L6.05 21.15z"
         fill="#EF4444"
       />
-      {/* Triángulo derecho (azul) */}
       <path
         d="m20.16 10.81-3.018-1.74-2.604 2.93 2.604 2.93 3.07-1.77a1.4 1.4 0 0 0 .708-1.16 1.4 1.4 0 0 0-.76-1.19z"
         fill="#3B82F6"
