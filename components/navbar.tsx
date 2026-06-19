@@ -21,11 +21,7 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Si estamos en el home, los links son anchors puros (#how). Si no
-  // (privacy/terms), apuntan al home con el anchor (/#how) para que el
-  // usuario aterrice en la sección correcta.
   const anchor = (id: string) => (isHome ? `#${id}` : `/#${id}`);
-  const downloadHref = anchor("download");
 
   const links = [
     { href: anchor("how"), label: t.nav.howItWorks },
@@ -42,7 +38,6 @@ export function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 py-4">
-        {/* Logo siempre lleva al home — funciona desde cualquier página */}
         <Link href="/" aria-label="Roomy" className="shrink-0">
           <RoomyLogo />
         </Link>
@@ -62,12 +57,12 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <LangSwitch locale={locale} setLocale={setLocale} />
-          <a
-            href={downloadHref}
+          <Link
+            href="/download"
             className="hidden sm:inline-flex items-center rounded-full bg-roomy-ink px-4 py-2 text-sm font-semibold text-white hover:bg-black transition"
           >
             {t.nav.download}
-          </a>
+          </Link>
           <button
             type="button"
             className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-soft"
@@ -79,7 +74,6 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile menu */}
       {open && (
         <div className="md:hidden border-t border-roomy-line bg-roomy-bg/95 backdrop-blur">
           <ul className="mx-auto max-w-6xl px-6 py-3 flex flex-col gap-3">
@@ -95,13 +89,13 @@ export function Navbar() {
               </li>
             ))}
             <li>
-              <a
-                href={downloadHref}
+              <Link
+                href="/download"
                 onClick={() => setOpen(false)}
                 className="inline-flex items-center rounded-full bg-roomy-ink px-4 py-2 text-sm font-semibold text-white"
               >
                 {t.nav.download}
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
